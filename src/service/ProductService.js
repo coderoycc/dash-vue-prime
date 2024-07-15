@@ -1,11 +1,11 @@
 export class ProductService {
-    getProductsSmall() {
+    async getProductsSmall() {
         return fetch('/demo/data/products-small.json', { headers: { 'Cache-Control': 'no-cache' } })
             .then((res) => res.json())
             .then((d) => d.data);
     }
 
-    getProducts() {
+    async getProducts() {
         return fetch('/demo/data/products.json', { headers: { 'Cache-Control': 'no-cache' } })
             .then((res) => res.json())
             .then((d) => d.data);
