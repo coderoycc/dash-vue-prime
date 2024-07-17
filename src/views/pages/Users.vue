@@ -5,7 +5,13 @@
         <Toolbar class="mb-4">
           <template v-slot:end>
             <div class="my-2">
-              <Button label="New" icon="pi pi-plus" class="mr-2" severity="success" />
+              <Button
+                label="Nuevo"
+                icon="pi pi-plus"
+                class="mr-2"
+                severity="success"
+                @click="newUser"
+              />
             </div>
           </template>
         </Toolbar>
@@ -53,13 +59,23 @@
       </div>
     </div>
   </div>
+  <SystemDialog
+    v-model:visible="dialogVisible"
+    :user="selectedUser"
+    :isEditing="isEditing"
+    @save="saveUser"
+  />
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
 import { UserService } from "@/service/UserService.js";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
+import SystemDialog from "@/components/systems/SystemDialog.vue";
 const users = ref([]);
+const selectedUser = ref(null);
+const isEditing = ref(false);
+const dialogVisible = ref(false);
 const userService = new UserService();
 const toast = useToast();
 const confirm = useConfirm();
@@ -73,6 +89,15 @@ onMounted(async () => {
 const editUser = (user) => {
   // Lógica para editar usuario
   console.log("Editar usuario:", user);
+  selectedUser.value = { ...user };
+  isEditing.value = true;
+  dialogVisible.value = true;
+};
+
+const newUser = () => {
+  console.log("Crear nuevo usuario");
+  isEditing.value = false;
+  dialogVisible.value = true;
 };
 
 const deleteUser = async (user) => {
