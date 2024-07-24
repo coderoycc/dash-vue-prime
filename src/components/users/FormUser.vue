@@ -1,5 +1,6 @@
 <template>
   <form @submit.prevent="sendForm">
+    <slot name="errors"></slot>
     <div class="formgrid grid">
       <div class="field col">
         <label for="name">Nombre completo</label>
@@ -58,7 +59,11 @@
         <InputText name="cellphone" v-model="userForm.cellphone" />
       </div>
     </div>
-    <Button type="submit" />
+    <div class="w-full flex justify-content-end">
+      <div class="inline-flex">
+        <slot name="buttons"></slot>
+      </div>
+    </div>
   </form>
 </template>
 <script setup>
@@ -91,27 +96,27 @@ const props = defineProps({
     default: false,
   },
 });
-
+const emit = defineEmits(["formSubmit"]);
 const userForm = ref(props.isEditing ? { ...props.user } : { ...defaultForm });
 
 const rules = {
   name: {
     required: helpers.withMessage("Este campo es requerido", required),
     minLength: helpers.withMessage(
-      "El campo nombre debe tener minimo 20 caracteres",
-      minLength(20)
+      "El campo nombre debe tener minimo 3 caracteres",
+      minLength(3)
     ),
   },
   lastname: {
     required: helpers.withMessage("El campo apellido es requerido", required),
-    minLength: minLength(10),
+    minLength: helpers.withMessage("El campo debe tener 5 caracteres como mínimo",minLength(5)),
     maxLength: maxLength(20),
   },
   username: {
     required: helpers.withMessage("El campo username es requerido", required),
     minLength: helpers.withMessage(
-      "El usuario debe tener como mínimo 8 caracteres",
-      minLength(8)
+      "El usuario debe tener como mínimo 5 caracteres",
+      minLength(5)
     ),
   },
   email: {
@@ -120,8 +125,10 @@ const rules = {
 };
 const v$ = useVuelidate(rules, userForm);
 const sendForm = async () => {
-  console.log(userForm);
   const result = await v$.value.$validate();
   console.log(result);
+  if(result){
+    emit('formSubmit', userForm.value)
+  }
 };
 </script>

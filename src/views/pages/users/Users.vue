@@ -72,7 +72,7 @@ import { ref, onMounted } from "vue";
 import { UserService } from "@/service/UserService.js";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
-import UserDialog from "@/components/users/Dialog.vue";
+import UserDialog from "@/components/users/DialogUser.vue";
 const users = ref([]);
 const selectedUser = ref(null);
 const isEditing = ref(false);
