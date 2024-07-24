@@ -59,11 +59,12 @@
       </div>
     </div>
   </div>
-  <SystemDialog
+  <UserDialog
     v-model:visible="dialogVisible"
     :user="selectedUser"
     :isEditing="isEditing"
     @save="saveUser"
+    @update="updateUser"
   />
 </template>
 <script setup>
@@ -71,7 +72,7 @@ import { ref, onMounted } from "vue";
 import { UserService } from "@/service/UserService.js";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
-import SystemDialog from "@/components/systems/SystemDialog.vue";
+import UserDialog from "@/components/users/Dialog.vue";
 const users = ref([]);
 const selectedUser = ref(null);
 const isEditing = ref(false);
@@ -130,5 +131,11 @@ const deleteUser = async (user) => {
       console.log("No eliminar");
     },
   });
+};
+const saveUser = async (user) => {
+  console.log("enviado para guardar ", user);
+};
+const updateUser = async (user) => {
+  console.log("Enviado para actualizar", user);
 };
 </script>

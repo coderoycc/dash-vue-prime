@@ -135,11 +135,11 @@ const router = createRouter({
           name: 'crud',
           component: () => import('@/views/pages/Crud.vue')
         },
-        {
-          path: '/documentation',
-          name: 'documentation',
-          component: () => import('@/views/utilities/Documentation.vue')
-        },
+        // {
+        //   path: '/documentation',
+        //   name: 'documentation',
+        //   component: () => import('@/views/utilities/Documentation.vue')
+        // },
       ]
     },
     {
@@ -149,7 +149,7 @@ const router = createRouter({
         {
           path: '',
           name: 'users',
-          component: () => import('@/views/pages/Users.vue')
+          component: () => import('@/views/pages/users/Users.vue')
         },
         {
           path: 'nuevo',
