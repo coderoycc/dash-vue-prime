@@ -62,10 +62,19 @@
       </div>
     </div>
   </div>
+  <DialogSystem
+    v-model:visible="dialogVisible"
+    :user="selectedSystem"
+    :isEditing="isEditing"
+  />
 </template>
 <script setup>
 import { ref } from "vue";
+import DialogSystem from '@/components/systems/DialogSystem.vue';
 const systems = ref([]);
+const selectedSystem = ref(null);
+const isEditing = ref(false);
+const dialogVisible = ref(false);
 async function editSystem(sys) {}
 async function deleteSystem(sys) {}
 </script>

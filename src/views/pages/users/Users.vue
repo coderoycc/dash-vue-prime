@@ -63,8 +63,6 @@
     v-model:visible="dialogVisible"
     :user="selectedUser"
     :isEditing="isEditing"
-    @save="saveUser"
-    @update="updateUser"
   />
 </template>
 <script setup>

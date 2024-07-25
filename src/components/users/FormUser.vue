@@ -88,7 +88,7 @@
   </form>
 </template>
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed, onMounted, defineProps } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, maxLength, helpers } from "@vuelidate/validators";
 const defaultForm = {
@@ -96,7 +96,7 @@ const defaultForm = {
   lastname: "",
   username: "",
   email: "",
-  gender: "",
+  gender: { name: '', code: '' },
   cellphone: "",
 };
 const genderOptions = [
@@ -121,7 +121,7 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["formSubmit"]);
-const userForm = ref(props.isEditing ? { ...props.user } : { ...defaultForm });
+const userForm = ref(props.isEditing ? { ...props.user, gender: { name: '', code: '' } } : { ...defaultForm });
 const requiredIf = (condition) =>
   helpers.withMessage("Este campo es requerido", (value) => {
     console.log("Validacion custom", value);

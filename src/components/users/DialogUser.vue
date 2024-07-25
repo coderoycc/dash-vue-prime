@@ -52,6 +52,7 @@ const emptyUser = {
   cellphone: "",
   website: "",
   lastname: "",
+  gender: { name:'', code:''},
 };
 const props = defineProps({
   visible: {
