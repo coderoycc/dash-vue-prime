@@ -10,7 +10,9 @@
   >
     <FormUser :is-editing="isEditing" :user="localUser" @formSubmit="handleSubmit">
       <template #errors v-if="requestError">
-        <Message severity="error" @close="resetErrors" icon="pi pi-times-circle">{{ requestMessage }}</Message>
+        <Message severity="error" @close="resetErrors" icon="pi pi-times-circle">{{
+          requestMessage
+        }}</Message>
       </template>
       <template #buttons>
         <Button
@@ -19,19 +21,18 @@
           class="p-button-text p-inline"
           @click="closeDialog"
         />
-
         <Button
           v-if="isEditing"
           type="submit"
-          label="Actualizar"
-          icon="pi pi-check"
+          :label="isSubmitting ? 'Actualizando...' : 'Actualizar'"
+          :icon="isSubmitting ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
           class="p-button-text"
         />
         <Button
           type="submit"
           v-if="!isEditing"
-          label="Guardar"
-          icon="pi pi-check"
+          :label="isSubmitting ? 'Guardando...' : 'Guardar'"
+          :icon="isSubmitting ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
           class="p-button-text"
         />
       </template>
@@ -73,7 +74,8 @@ const emit = defineEmits(["update:visible"]);
 
 const localUser = ref(emptyUser);
 const requestError = ref(false);
-const requestMessage = ref('');
+const requestMessage = ref("");
+const isSubmitting = ref(false);
 const emitVisible = (value) => emit("update:visible", value);
 watch(
   () => props.user,
@@ -91,26 +93,21 @@ const closeDialog = () => {
   localUser.value = { ...emptyUser };
   resetErrors();
   emitVisible(false);
-  console.log(requestError.value)
+  console.log(requestError.value);
 };
 const handleSubmit = async (event) => {
+  isSubmitting.value = true;
   resetErrors();
   setTimeout(() => {
-    console.log('sdafds')
-    console.log('LLEGO FORM')
-    console.log(props.isEditing)
-    console.log('DATOS', event)
+    console.log(props.isEditing);
+    console.log("DATOS", event);
     requestError.value = true;
-    requestMessage.value = 'Error test'
-    console.log(requestMessage.value)
-    console.log(requestError.value)
+    requestMessage.value = "Error test";
+    isSubmitting.value = false;
   }, 1000);
-}
-const saveUser = async () => {
-
 };
-const updateUser = async () => {
-};
+const saveUser = async () => {};
+const updateUser = async () => {};
 const onDialogHide = () => {
   localUser.value = { ...emptyUser };
   resetErrors();
@@ -118,6 +115,6 @@ const onDialogHide = () => {
 };
 const resetErrors = () => {
   requestError.value = false;
-  requestMessage.value = '';
-}
+  requestMessage.value = "";
+};
 </script>

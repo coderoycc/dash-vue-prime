@@ -14,7 +14,10 @@
         </small>
       </div>
       <div class="field col">
-        <label for="lastname">Apellidos</label>
+        <label for="lastname"
+          >Apellidos
+          <span class="text-red-500" v-if="v$.lastname.$required">*</span></label
+        >
         <InputText
           name="lastname"
           v-model="userForm.lastname"
@@ -52,11 +55,29 @@
     <div class="formgrid grid">
       <div class="field col">
         <label for="gender">Género</label>
-        <InputText name="gender" v-model="userForm.gender" />
+        <Dropdown
+          v-model="userForm.gender"
+          :options="genderOptions"
+          optionLabel="name"
+          placeholder="Selecciona uno"
+        ></Dropdown>
+        <small v-if="v$.gender.$error" class="p-error">
+          {{ v$.gender.$errors[0].$message }}
+        </small>
       </div>
       <div class="field col">
-        <label for="cellphone">Celular</label>
+        <label for="cellphone"
+          >Celular
+          <span
+            class="text-red-500"
+            v-if="userForm.gender.code == 'F' || userForm.email == ''"
+            >*</span
+          ></label
+        >
         <InputText name="cellphone" v-model="userForm.cellphone" />
+        <small v-if="v$.cellphone.$error" class="p-error">
+          {{ v$.cellphone.$errors[0].$message }}
+        </small>
       </div>
     </div>
     <div class="w-full flex justify-content-end">
@@ -67,7 +88,7 @@
   </form>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, maxLength, helpers } from "@vuelidate/validators";
 const defaultForm = {
@@ -78,7 +99,10 @@ const defaultForm = {
   gender: "",
   cellphone: "",
 };
-
+const genderOptions = [
+  { name: "MASCULINO", code: "M" },
+  { name: "FEMENINO", code: "F" },
+];
 onMounted(() => {
   console.log(props.isEditing);
   console.log(props.user, "usuario");
@@ -98,19 +122,37 @@ const props = defineProps({
 });
 const emit = defineEmits(["formSubmit"]);
 const userForm = ref(props.isEditing ? { ...props.user } : { ...defaultForm });
-
-const rules = {
+const requiredIf = (condition) =>
+  helpers.withMessage("Este campo es requerido", (value) => {
+    console.log("Validacion custom", value);
+    console.log(
+      "valores condition",
+      userForm.value.gender.code == "F" || userForm.value.email == ""
+    );
+    if (condition()) {
+      return value != null && value.trim() != "";
+    }
+    return true;
+  });
+const rules = computed(() => ({
   name: {
     required: helpers.withMessage("Este campo es requerido", required),
     minLength: helpers.withMessage(
       "El campo nombre debe tener minimo 3 caracteres",
       minLength(3)
     ),
+    maxLength: helpers.withMessage(
+      "El campo nombre debe tener como máximo 30 caracteres",
+      maxLength(30)
+    ),
   },
   lastname: {
     required: helpers.withMessage("El campo apellido es requerido", required),
-    minLength: helpers.withMessage("El campo debe tener 5 caracteres como mínimo",minLength(5)),
-    maxLength: maxLength(20),
+    minLength: helpers.withMessage(
+      "El campo debe tener 5 caracteres como mínimo",
+      minLength(5)
+    ),
+    maxLength: helpers.withMessage("El máximo permitido es 20 caracteres", maxLength(20)),
   },
   username: {
     required: helpers.withMessage("El campo username es requerido", required),
@@ -122,13 +164,21 @@ const rules = {
   email: {
     email: helpers.withMessage("Ingrese un correo electrónico válido", email),
   },
-};
+  gender: {
+    required: helpers.withMessage("Este campo es requerido", required),
+  },
+  cellphone: {
+    required: requiredIf(
+      () => userForm.value.gender.code == "F" || !userForm.value.email
+    ),
+  },
+}));
 const v$ = useVuelidate(rules, userForm);
 const sendForm = async () => {
   const result = await v$.value.$validate();
   console.log(result);
-  if(result){
-    emit('formSubmit', userForm.value)
+  if (result) {
+    emit("formSubmit", userForm.value);
   }
 };
 </script>
